@@ -12,4 +12,16 @@ class Core:
 class Cluster:
     # ＜コンストラクタ＞
     def __init__(self, num_of_core):
-        print(Hello)
+        # コアを用意
+        self.core = []  # このクラスタ内にあるコア
+        for i in range(num_of_core):
+            self.core.append(Core())
+            
+
+class ClusteredManyCoreProcesser:
+    # ＜コンストラクタ＞
+    def __init__(self, num_of_cluster, num_of_core):
+        # プロセッサを形成
+        self.cluster = []  # このプロセッサ内にあるクラスタ
+        for i in range(num_of_cluster):
+            self.cluster.append(Cluster(num_of_core))
