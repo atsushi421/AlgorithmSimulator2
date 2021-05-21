@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 
-import class_DAG
+from class_DAG import DAG
 
 
-dag = class_DAG.DAG("test_nine_task")
+dag1 = DAG("test_nine_task")
 
-dag.print_all()
+dag1.print_all()

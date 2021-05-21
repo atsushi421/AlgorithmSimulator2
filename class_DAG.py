@@ -9,6 +9,12 @@ class DAG:
     # ＜コンストラクタ＞
     def __init__(self, file_tgff):
         self.num_of_node, self.node, self.edge, self.pred, self.succ, self.entry, self.exit = self.read_file_tgff(file_tgff)
+        self.ranku = [0] * self.num_of_node  # ranku[i] : niのranku
+        
+        # rankuの計算
+        for i in range(self.num_of_node):
+            if(self.entry[i] == 1):
+                self.ranku_calc(i)
         '''
         num_of_node : DAG内のノード数
         node[i] : niの実行時間
@@ -114,9 +120,29 @@ class DAG:
 
 
     # rankuの計算
+    def ranku_calc(self, n):
+        if(self.exit[n] == 1):  # exitノードであれば
+            self.ranku[n] = self.node[n]  # rankuは実行時間
+        
+        else:
+            # 後続ノードのrankuを計算
+            for succ_n in self.succ[n]:  # 後任ノードでループ
+                if(self.ranku[succ_n] != 0):  # すでにランク値が計算されていればスキップ
+                    continue
+                
+                self.ranku_calc(succ_n)
+                
+            # 後続ノードの中で「n～succ_nの通信時間＋succ_nのranku」が最大になるノードを見つけ、その最大値を保持
+            max_value = 0
+            
+            for succ_n in self.succ[n]:
+                tmp = self.edge[n][succ_n] + self.ranku[succ_n]
+                if(tmp > max_value):
+                    max_value = tmp
+            
+            self.ranku[n] = self.node[n] + max_value  # rankuを計算
 
-
-    # プロパティの表示
+    # 変数の表示
     def print_num_of_node(self):
         print("num_of_node = ", end = "")
         print(self.num_of_node)
@@ -144,6 +170,10 @@ class DAG:
     def print_exit(self):
         print("exit = ", end = "")
         print(self.exit)
+        
+    def print_ranku(self):
+        print("ranku = ", end = "")
+        print(self.ranku)
     
     def print_all(self):
         self.print_num_of_node()
@@ -153,3 +183,4 @@ class DAG:
         self.print_succ()
         self.print_entry()
         self.print_exit()
+        self.print_ranku()
