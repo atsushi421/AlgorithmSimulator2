@@ -8,12 +8,10 @@ class Core:
         idle=True : このコアがアイドル状態
         processing_node : 処理中のノード番号
         remain_process : 残処理時間
-        finish_time : 処理終了時刻
         '''
         self.idle = True
         self.processing_node = -1
         self.remain_process = 0
-        self.finish_time = -1
     
     
     # ＜メソッド＞
@@ -54,24 +52,32 @@ class Cluster:
                 return i
         
         return -1
-            
+    
+    # 現在処理中のノードを返す
+    def processing_node(self):
+        list = []
+        
+        for i in range(self.num_of_core):
+            if(self.core[i].idle == False):
+                list.append(self.core[i].processing_node)
+        
+        return list
+    
 
 
 class ClusteredManyCoreProcesser:
-    # ＜クラス変数＞
-    current_time = 0  # 現在時刻
-    
-    
     # ＜コンストラクタ＞
-    def __init__(self, num_of_cluster, num_of_core):
+    def __init__(self, num_of_cluster, num_of_core, inout_ratio):
         '''
         num_of_cluster : プロセッサ内のクラスタ数
         num_of_core : 1クラスタ内のコア数
-        cluster = [] : このプロセッサ内にあるクラスタ
+        inout_ratio : クラスタ外の通信時間とクラスタ内の通信時間の比率
+        cluster[] : このプロセッサ内にあるクラスタ
         '''
         
         self.num_of_cluster = num_of_cluster
         self.num_of_core = num_of_core
+        self.inout_ratio = inout_ratio
         # プロセッサを形成
         self.cluster = []
         for i in range(self.num_of_cluster):
@@ -81,7 +87,16 @@ class ClusteredManyCoreProcesser:
     # ＜メソッド＞
     # 処理を1進める
     def advance_time(self):
-        ClusteredManyCoreProcesser.current_time+=1
-        
         for i in range(self.num_of_cluster):
             self.cluster[i].advance_time()
+            
+    
+    # 現在処理中のノードのリストを返す
+    def processing_nodes(self):
+        processing_nodes = []
+        
+        for i in range(self.num_of_cluster):
+            list = self.cluster[i].processing_nodes()
+            processing_nodes = processing_nodes + list
+        
+        return processing_nodes
