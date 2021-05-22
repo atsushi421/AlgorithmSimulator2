@@ -8,13 +8,6 @@ import pprint
 class DAG:
     # ＜コンストラクタ＞
     def __init__(self, file_tgff):
-        self.num_of_node, self.node, self.edge, self.pred, self.succ, self.entry, self.exit = self.read_file_tgff(file_tgff)
-        self.ranku = [0] * self.num_of_node  # ranku[i] : niのranku
-        
-        # rankuの計算
-        for i in range(self.num_of_node):
-            if(self.entry[i] == 1):
-                self.ranku_calc(i)
         '''
         num_of_node : DAG内のノード数
         node[i] : niの実行時間
@@ -23,7 +16,17 @@ class DAG:
         succ[i] : niの後続ノードのリスト
         entry[i]=1 : niはentryノード. entry[i]=0 : niはentryノードではない
         exit[i]=1 : niはexitノード. exit[i]=0 : niはexitノードではない
+        ranku[i] : niのranku
         '''
+        
+        self.num_of_node, self.node, self.edge, self.pred, self.succ, self.entry, self.exit = self.read_file_tgff(file_tgff)
+        self.ranku = [0] * self.num_of_node
+        
+        # rankuの計算
+        for i in range(self.num_of_node):
+            if(self.entry[i] == 1):
+                self.ranku_calc(i)
+        
 
 
     # ＜メソッド＞
@@ -141,6 +144,7 @@ class DAG:
                     max_value = tmp
             
             self.ranku[n] = self.node[n] + max_value  # rankuを計算
+
 
     # 変数の表示
     def print_num_of_node(self):
