@@ -46,7 +46,7 @@ class Q_learning:
             current_state = self.dag.ve_index  # 初期状態は仮想entryノード
             finish_nodes = [self.dag.ve_index]  # 仮想entryノードは選択済み
             wait_nodes = []
-            self.check_succ(current_state, wait_nodes)
+            wait_nodes += self.check_succ(current_state, finish_nodes, wait_nodes)
             
             no_update_flag = 0  # 1ステップでq_saの更新が0の時+1.
             
@@ -56,8 +56,9 @@ class Q_learning:
                 wait_nodes.remove(selected_node)
                 finish_nodes.append(selected_node)
                 before_state = current_state
+                current_state = selected_node
                 r = self.reward[selected_node]
-                self.check_succ(current_state, wait_nodes)
+                wait_nodes += self.check_succ(current_state, finish_nodes, wait_nodes)
 
                 max_q_value = 0
                 max_value_action = 0
@@ -77,21 +78,25 @@ class Q_learning:
             # エピソードループ終了判定
             if(no_update_flag == (self.dag.num_of_node - 1)):  # 1エピソード内でq_saの更新が無かった場合
                 convergence_flag+=1
-                if(convergence_flag == 300000):
+                if(convergence_flag == 3000):
                     break
                 
     
-    # 「nの後続ノード かつ legal かつ wait_nodesに入っていない」ノードをwait_nodesに加える
-    def check_succ(self, n, wait_nodes):
+    # 「nの後続ノード かつ legal かつ wait_nodesに入っていない」ノードのリストを返す
+    def check_succ(self, n, finish_nodes, wait_nodes):
+        list = []
+        
         for succ_n in self.dag.succ[n]:
-            if(self.legal(succ_n) and n not in wait_nodes):
-                wait_nodes.append(succ_n)
+            if(self.legal(succ_n, finish_nodes) and succ_n not in wait_nodes):
+                list.append(succ_n)
+        
+        return list
     
     
     # nがlegalであればTrue, そうでなければFalse
-    def legal(self, n):
+    def legal(self, n, finish_nodes):
         for pred_n in self.dag.pred[n]:
-            if(pred_n not in self.finish_nodes):
+            if(pred_n not in finish_nodes):
                 return False
         
         return True
@@ -101,3 +106,16 @@ class Q_learning:
     def reward_calc(self):
         for i in range(self.dag.num_of_node):
             self.reward.append(self.dag.ranku[i])
+    
+    
+    # q_saを表示（整数に変換）
+    def print_q_sa_int(self):
+        q_sa_int = [[0 for j in range(self.dag.num_of_node)] for i in range(self.dag.num_of_node)]
+        
+        for i in range(self.dag.num_of_node):
+            for j in range(self.dag.num_of_node):
+                q_sa_int[i][j] = int(self.q_sa[i][j])
+        
+        print("q_sa_int = ", end = "")
+        for i in range(self.dag.num_of_node):
+            print(q_sa_int[i])
