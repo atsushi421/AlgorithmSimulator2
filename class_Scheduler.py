@@ -5,7 +5,6 @@ class Scheduler:
     # ＜コンストラクタ＞
     def __init__(self, scheduling_list, dag, target):
         '''
-        current_time : 現在時刻
         scheduling_list : スケジューリングリスト
         dag : 割り当てるDAG
         target : ノードを割り当てるターゲットプロセッサ
@@ -13,8 +12,7 @@ class Scheduler:
         result_node[i] : niの割り当て結果. [割り当てられたクラスタ番号, 割り当てられたコア番号 , 処理開始時間, 処理終了時間]
         finish_nodes[] : 処理が終わったノード
         '''
-        
-        self.current_time = 0
+
         self.scheduling_list = scheduling_list
         self.dag = dag
         self.target = target
@@ -26,54 +24,72 @@ class Scheduler:
     # ＜メソッド＞
     # スケジューリングリストをもとに割り当て
     def schedule(self):
+        
+        
         while(len(self.finish_nodes) != self.dag.num_of_node):  #すべてのタスクの実行が終了したら、ループ終了
-            if(len(self.scheduling_list) != 0):
-                head = self.scheduling_list[0]  # スケジューリングリストの先頭
-            else:  # スケジューリングリストが空
-                # すべてのノードが終了するまで処理を進める
+
+            # 処理を待つ場合
+            if(len(self.scheduling_list) == 0):  # スケジューリングリストが空
+                self.advance_time()
+                continue
+                
+            """
+            if(self.target.empty_cluster() == False):  # プロセッサに空きがない
+                self.advance_time()
+                continue
+            """
+            
+            if(self.legal(self.scheduling_list[0]) == False):  # スケジューリングリストの先頭がlegalでない
                 self.advance_time()
                 continue
             
-            if(self.legal(head)):
-                earliest_CC = -1  # ESTが最小となるクラスタ番号
-                earliest_core = -1  #ESTが最小となるコア番号
-                min_EST = 99999999  # ESTの最小値
+            
+            head = self.scheduling_list[0]  # スケジューリングリストの先頭
+            
+            earliest_CC = -1  # ESTが最小となるクラスタ番号
+            earliest_core = -1  #ESTが最小となるコア番号
+            min_EST = 99999999  # ESTの最小値
                 
-                for i in range(self.target.num_of_cluster):
-                    temp_EST = 0  # クラスタ毎のEST
-                    max_FT_plus_C = 0  # 前任ノードをすべて見た時の FT+C の最大値
-                    AT = 0  # 見ているクラスタのAT
+            for i in range(self.target.num_of_cluster):
+                temp_EST = 0  # クラスタ毎のEST
+                max_FT_plus_C = 0  # 前任ノードをすべて見た時の FT+C の最大値
+                AT = 0  # 見ているクラスタのAT
                     
-                    # ATを求める
-                    idle_flag = self.target.cluster[i].idle_core()
-                    if(idle_flag != -1):  # クラスタiに空きがある
-                        temp_earliest_core = idle_flag
-                        AT = 0
-                    else:  # クラスタiに空きがない
-                        AT, temp_earliest_core = self.AT(i)
+                # ATを求める
+                idle_flag = self.target.cluster[i].idle_core()
+                if(idle_flag != -1):  # クラスタiに空きがある
+                    temp_earliest_core = idle_flag
+                    AT = 0
+                else:  # クラスタiに空きがない
+                    AT, temp_earliest_core = self.AT(i)
                     
-                    # max(FT + C)を求める
-                    for pred_n in self.dag.pred[head]:
+                # max(FT + C)を求める
+                for pred_n in self.dag.pred[head]:
+                    if(self.dag.entry[head] == 1):  # headがentryノードであれば
+                        temp_FT_plus_C = 0
+                    else:
                         temp_FT_plus_C = self.FT(pred_n) + self.comm_cost(pred_n, head , i)
                         
-                        if(temp_FT_plus_C > max_FT_plus_C):
-                            max_FT_plus_C = temp_FT_plus_C
+                    if(temp_FT_plus_C > max_FT_plus_C):
+                        max_FT_plus_C = temp_FT_plus_C
                     
-                    # temp_EST を求める
-                    temp_EST = max(max_FT_plus_C, AT)
+                # temp_EST を求める
+                temp_EST = max(max_FT_plus_C, AT)
                     
-                    # ESTの更新
-                    if(temp_EST < min_EST):
-                        min_EST = temp_EST
-                        earliest_CC = i
-                        earliest_core = temp_earliest_core
-                
-                # headの割り当て
-                self.scheduling_list.pop(0)  # スケジューリングリストの先頭を削除
-                self.allocate(head, earliest_CC, earliest_core)
-                        
-            else:  # headがlegalでない
+                # ESTの更新
+                if(temp_EST < min_EST):
+                    min_EST = temp_EST
+                    earliest_CC = i
+                    earliest_core = temp_earliest_core
+            
+            if(self.target.current_time < min_EST):  # headのESTの時刻になっていない
                 self.advance_time()
+                continue
+            
+            # headの割り当て
+            self.scheduling_list.pop(0)  # スケジューリングリストの先頭を削除
+            self.allocate(head, earliest_CC, earliest_core)
+
     
     
     # nをクラスタi,コアjに割り当てる
@@ -83,21 +99,21 @@ class Scheduler:
         self.target.cluster[i].core[j].remain_process = self.dag.node[n]
         
         # resultの書き込み
-        self.result_core[i][j].append([n, self.current_time, (self.current_time + self.dag.node[n])])
-        self.result_node[n].append([i, j, self.current_time, (self.current_time + self.dag.node[n])])
+        self.result_core[i][j].append([n, self.target.current_time, (self.target.current_time + self.dag.node[n])])
+        self.result_node[n] = [i, j, self.target.current_time, (self.target.current_time + self.dag.node[n])]
     
     
     # 時刻を1進め, 終了判定
     def advance_time(self):
-        self.current_time+=1
-        
+        self.target.current_time+=1
+
         #終了判定
         processing_node = self.target.processing_nodes()
         for n in processing_node:
-            if(self.result_node[n][3] == self.current_time):
+            if(self.result_node[n][3] == self.target.current_time):
                 self.finish_nodes.append(n)
         
-        self.target.advance_time()
+        self.target.advance_process()
     
     
     # pred_n の処理終了時間を返す
@@ -121,7 +137,7 @@ class Scheduler:
         earliest_core = -1
         
         for j in range(self.target.num_of_core):
-            idle_time = self.result_core[i][j][2]
+            idle_time = self.result_core[i][j][-1][2]
             if(idle_time < min_idle):
                 min_idle = idle_time
                 earliest_core = j
@@ -136,3 +152,18 @@ class Scheduler:
                 return False
         
         return True
+    
+    
+    # result_core を表示
+    def print_result_core(self):
+        for i in range(self.target.num_of_cluster):
+            for j in range(self.target.num_of_core):
+                print("P(" + str(i) + ", " + str(j) + ") : ", end = "")
+                print(self.result_core[i][j])
+    
+    
+    # result_node を表示
+    def print_result_node(self):
+        for i in range(self.dag.num_of_node):
+            print("node " + str(i) + " : ", end = "")
+            print("{P(" + str(self.result_node[i][0]) + ", " + str(self.result_node[i][1]) + "), ST = " + str(self.result_node[i][2]) + ", FT = " + str(self.result_node[i][3]) + "}")
