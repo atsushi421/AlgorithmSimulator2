@@ -33,12 +33,6 @@ class Scheduler:
                 self.advance_time()
                 continue
                 
-            """
-            if(self.target.empty_cluster() == False):  # プロセッサに空きがない
-                self.advance_time()
-                continue
-            """
-            
             if(self.legal(self.scheduling_list[0]) == False):  # スケジューリングリストの先頭がlegalでない
                 self.advance_time()
                 continue
@@ -91,7 +85,6 @@ class Scheduler:
             self.allocate(head, earliest_CC, earliest_core)
 
     
-    
     # nをクラスタi,コアjに割り当てる
     def allocate(self, n, i, j):
         self.target.cluster[i].core[j].idle = False
@@ -126,6 +119,7 @@ class Scheduler:
         pred_CC = self.result_node[pred_n][0]  # 前任ノードが割り当てられたクラスタ
         
         if(pred_CC == i):  # 割り当てるクラスタが同じ
+
             return self.dag.edge[pred_n][n]
         else:  # 割り当てるクラスタが異なる
             return self.dag.edge[pred_n][n] * self.target.inout_ratio
