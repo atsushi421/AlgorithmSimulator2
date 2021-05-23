@@ -22,6 +22,8 @@ class Scheduler:
         self.result_core = [[[] for j in range(self.target.num_of_core)] for i in range(self.target.num_of_cluster)]
         self.result_node = [[] for i in range(self.dag.num_of_node)]
         self.finish_nodes = []
+        
+        self.schedule()
     
     
     # ＜メソッド＞

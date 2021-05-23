@@ -18,6 +18,7 @@ class DAG:
         entry[i]=1 : niはentryノード. entry[i]=0 : niはentryノードではない
         exit[i]=1 : niはexitノード. exit[i]=0 : niはexitノードではない
         ranku[i] : niのranku
+        CCR : 通信時間と実行時間の比率
         '''
         
         self.file_name = file_tgff
@@ -28,6 +29,8 @@ class DAG:
         for i in range(self.num_of_node):
             if(self.entry[i] == 1):
                 self.ranku_calc(i)
+        
+        self.CCR = self.ccr_calc()
         
 
 
@@ -146,6 +149,38 @@ class DAG:
                     max_value = tmp
             
             self.ranku[n] = self.node[n] + max_value  # rankuを計算
+    
+    
+    # CCRの計算
+    def ccr_calc(self):
+        sum_comm = 0
+        
+        for i in range(self.num_of_node):
+            for j in range(self.num_of_node):
+                if(self.edge[i][j] != 0):  # エッジがあれば
+                    sum_comm += self.edge[i][j]
+        
+        ave_comm = sum_comm / self.num_edge()  # 平均通信時間
+        
+        sum_exec = 0
+        for i in range(self.num_of_node):
+            sum_exec += self.node[i]
+        
+        ave_exec = sum_exec / self.num_of_node
+        
+        self.CCR = ave_comm / ave_exec
+        
+    
+    # エッジの数を返す
+    def num_edge(self):
+        num_edge = 0  # DAGのエッジの総数
+        
+        for i in range(self.num_of_node):
+            for j in range(self.num_of_node):
+                if(self.edge[i][j] != 0):  # エッジがあれば
+                    num_edge += 1
+        
+        return num_edge
 
 
     # 変数の表示

@@ -26,7 +26,6 @@ class Proposed():
         self.scheduling_list = QLHEFT(dag, self.target)
         self.scheduler = Scheduler(self.scheduling_list, self.dag, self.target)
         self.scheduler.schedule()
-        print(self.scheduling_list)
         self.best_makespan = self.scheduler.makespan()
     
     
@@ -38,7 +37,7 @@ class Proposed():
         while(temp_makespan < self.best_makespan):  # メイクスパンが短縮される限りループ
             num_diff = self.num_diff()
             print(num_diff)
-            num_edge = self.num_edge()
+            num_edge = self.dag.num_edge()
             print(num_edge)
             
             # 通信時間を更新
@@ -75,18 +74,6 @@ class Proposed():
                     num_diff+=1
         
         return num_diff
-    
-    
-    # dagのエッジの数を返す
-    def num_edge(self):
-        num_edge = 0  # DAGのエッジの総数
-        
-        for i in range(self.dag.num_of_node):
-            for j in range(self.dag.num_of_node):
-                if(self.dag.edge[i][j] != 0):  # エッジがあれば
-                    num_edge += 1
-        
-        return num_edge
     
     
     # 学習し, スケジューリングリストを得る
