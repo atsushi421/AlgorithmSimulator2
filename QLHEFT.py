@@ -7,10 +7,15 @@ from class_Q_learning import Q_learning
 
 def QLHEFT(dag, target):
     one_entry_dag = one_entry_DAG(dag.file_name)  # one_entry_DAG に変換
+
     # 通信時間を平均にする
     for i in range(one_entry_dag.num_of_node):
         for j in range(one_entry_dag.num_of_node):
             one_entry_dag.edge[i][j] = int((one_entry_dag.edge[i][j] + (one_entry_dag.edge[i][j] * target.inout_ratio)) / 2)
+    
+    # ranku を再計算
+    one_entry_dag.ranku = [0] * one_entry_dag.num_of_node  # 初期化
+    one_entry_dag.ranku_calc(one_entry_dag.ve_index)
     
     q_learning = Q_learning(1.0, 0.8, one_entry_dag)
     q_learning.learning()
@@ -33,9 +38,9 @@ def QLHEFT(dag, target):
                 max_value_action = wait_n
 
         selected_node = max_value_action  # 行動価値が最大の行動を選択
-        wait_nodes.remove(max_value_action)
-        finish_nodes.append(max_value_action)
-        current_state = max_value_action
+        wait_nodes.remove(selected_node)
+        finish_nodes.append(selected_node)
+        current_state = selected_node
         wait_nodes += q_learning.check_succ(current_state, finish_nodes, wait_nodes)
     
     scheduling_list = finish_nodes

@@ -37,14 +37,18 @@ class Proposed():
         
         while(temp_makespan < self.best_makespan):  # メイクスパンが短縮される限りループ
             num_diff = self.num_diff()
+            print(num_diff)
             num_edge = self.num_edge()
+            print(num_edge)
             
             # 通信時間を更新
             for i in range(self.dag.num_of_node):
                 for j in range(self.dag.num_of_node):
                     self.one_entry_dag.edge[i][j] = int((self.dag.edge[i][j] * (1 - num_diff/num_edge)) + (self.dag.edge[i][j] * self.target.inout_ratio * (num_diff/num_edge)))
             
-            self.one_entry_dag.ranku_calc(self.one_entry_dag.ve_index)  # ranku を再計算
+            # ranku を再計算
+            self.one_entry_dag.ranku = [0] * self.one_entry_dag.num_of_node  # 初期化
+            self.one_entry_dag.ranku_calc(self.one_entry_dag.ve_index)
             
             temp_scheduling_list = self.re_get()
             target = ClusteredManyCoreProcesser(self.target.num_of_cluster, self.target.num_of_core, self.target.inout_ratio)

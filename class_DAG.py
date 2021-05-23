@@ -159,7 +159,7 @@ class DAG:
         
     def print_edge(self):
         print("edge = ", end = "")
-        pprint.pprint(self.edge)
+        pprint.pprint(self.edge, compact=True)
     
     def print_pred(self):
         print("pred = ", end = "")
