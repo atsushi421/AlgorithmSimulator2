@@ -9,6 +9,7 @@ class DAG:
     # ＜コンストラクタ＞
     def __init__(self, file_tgff):
         '''
+        file_name : .tgffファイルの名前
         num_of_node : DAG内のノード数
         node[i] : niの実行時間
         edge[i][j] : ni~nj間の通信時間
@@ -19,7 +20,8 @@ class DAG:
         ranku[i] : niのranku
         '''
         
-        self.num_of_node, self.node, self.edge, self.pred, self.succ, self.entry, self.exit = self.read_file_tgff(file_tgff)
+        self.file_name = file_tgff
+        self.num_of_node, self.node, self.edge, self.pred, self.succ, self.entry, self.exit = self.read_file_tgff()
         self.ranku = [0] * self.num_of_node
         
         # rankuの計算
@@ -31,8 +33,8 @@ class DAG:
 
     # ＜メソッド＞
     # .tgffファイルの読み込み
-    def read_file_tgff(self, file_tgff):
-        path = "./DAG/" + file_tgff + ".tgff"  # DAG直下にあることを想定
+    def read_file_tgff(self):
+        path = "./DAG/" + self.file_name + ".tgff"  # DAG直下にあることを想定
         file_tgff = open(path, "r")
         
         type_cost = []  # TYPEと実行時間の対応関係の配列
@@ -157,7 +159,7 @@ class DAG:
         
     def print_edge(self):
         print("edge = ", end = "")
-        pprint.pprint(self.edge)
+        pprint.pprint(self.edge, compact=True)
     
     def print_pred(self):
         print("pred = ", end = "")
@@ -196,6 +198,7 @@ class one_entry_DAG(DAG):
     # ＜コンストラクタ＞
     def __init__(self, file_tgff):
         '''
+        file_name : .tgffファイルの名前
         num_of_node : DAG内のノード数
         node[i] : niの実行時間
         edge[i][j] : ni~nj間の通信時間
@@ -213,8 +216,8 @@ class one_entry_DAG(DAG):
     
     # ＜メソッド＞
     # .tgffファイルの読み込み時に仮想entryノードを追加
-    def read_file_tgff(self, file_tgff):
-        path = "./DAG/" + file_tgff + ".tgff"  # DAG直下にあることを想定
+    def read_file_tgff(self):
+        path = "./DAG/" + self.file_name + ".tgff"  # DAG直下にあることを想定
         file_tgff = open(path, "r")
         
         type_cost = []  # TYPEと実行時間の対応関係の配列

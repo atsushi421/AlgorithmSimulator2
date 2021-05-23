@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
 
+import copy
+
+
 class Scheduler:
     # ＜コンストラクタ＞
     def __init__(self, scheduling_list, dag, target):
@@ -13,7 +16,7 @@ class Scheduler:
         finish_nodes[] : 処理が終わったノード
         '''
 
-        self.scheduling_list = scheduling_list
+        self.scheduling_list = copy.deepcopy(scheduling_list)
         self.dag = dag
         self.target = target
         self.result_core = [[[] for j in range(self.target.num_of_core)] for i in range(self.target.num_of_cluster)]
@@ -161,3 +164,14 @@ class Scheduler:
         for i in range(self.dag.num_of_node):
             print("node " + str(i) + " : ", end = "")
             print("{P(" + str(self.result_node[i][0]) + ", " + str(self.result_node[i][1]) + "), ST = " + str(self.result_node[i][2]) + ", FT = " + str(self.result_node[i][3]) + "}")
+    
+    
+    # makespan を取得
+    def makespan(self):
+        makespan = 0
+        
+        for i in range(self.dag.num_of_node):
+            if(self.result_node[i][3] > makespan):
+                makespan = self.result_node[i][3]
+        
+        return makespan
