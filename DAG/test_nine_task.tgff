@@ -1,0 +1,56 @@
+@TASK_GRAPH 0 {
+
+	TASK t0_0 TYPE 0
+	TASK t0_1 TYPE 1
+	TASK t0_2 TYPE 2
+	TASK t0_3 TYPE 3
+	TASK t0_4 TYPE 4
+	TASK t0_5 TYPE 5
+	TASK t0_6 TYPE 6
+	TASK t0_7 TYPE 7
+	TASK t0_8 TYPE 8
+
+	ARC a0_0  FROM t0_0  TO  t0_1 TYPE 9
+	ARC a0_1  FROM t0_0  TO  t0_4 TYPE 10
+	ARC a0_2  FROM t0_1  TO  t0_2 TYPE 11
+	ARC a0_3  FROM t0_1  TO  t0_3 TYPE 12
+	ARC a0_4  FROM t0_2  TO  t0_8 TYPE 13
+	ARC a0_5  FROM t0_3  TO  t0_8 TYPE 14
+	ARC a0_6  FROM t0_4  TO  t0_5 TYPE 15
+	ARC a0_7  FROM t0_4  TO  t0_6 TYPE 16
+	ARC a0_8  FROM t0_4  TO  t0_7 TYPE 17
+	ARC a0_9  FROM t0_5  TO  t0_8 TYPE 18
+	ARC a0_10   FROM t0_6  TO  t0_8 TYPE 19
+	ARC a0_11   FROM t0_7  TO  t0_8 TYPE 20
+}
+
+
+
+@PE 5 {
+#  price      
+   00.000    
+
+#------------------------------------------------------------------------------
+# type  exec_time  
+  0     9
+  1     10
+  2     18
+  3     20
+  4     34
+  5     22
+  6     15
+  7     29
+  8     16
+  9     7
+  10    8
+  11    4
+  12    5
+  13    9
+  14    10
+  15    9
+  16    8
+  17    9
+  18    9
+  19    10
+  20    8
+ }

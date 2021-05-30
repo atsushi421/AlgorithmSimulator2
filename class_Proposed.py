@@ -26,7 +26,6 @@ class Proposed():
         self.scheduling_list = QLHEFT(dag, self.target)
         self.scheduler = Scheduler(self.scheduling_list, self.dag, self.target)
         self.scheduler.schedule()
-        print(self.scheduling_list)
         self.best_makespan = self.scheduler.makespan()
     
     
@@ -35,11 +34,9 @@ class Proposed():
     def best_scheduling_list(self):
         temp_makespan = 0
         
-        while(temp_makespan < self.best_makespan):  # メイクスパンが短縮される限りループ
+        while(True):  # メイクスパンが短縮される限りループ
             num_diff = self.num_diff()
-            print(num_diff)
-            num_edge = self.num_edge()
-            print(num_edge)
+            num_edge = self.dag.num_edge()
             
             # 通信時間を更新
             for i in range(self.dag.num_of_node):
@@ -53,16 +50,17 @@ class Proposed():
             temp_scheduling_list = self.re_get()
             target = ClusteredManyCoreProcesser(self.target.num_of_cluster, self.target.num_of_core, self.target.inout_ratio)
             temp_scheduler = Scheduler(temp_scheduling_list, self.dag, target)
-            temp_scheduler.schedule()
             temp_makespan = temp_scheduler.makespan()
             
             # 結果の判定
             if(temp_makespan < self.best_makespan):
+                self.scheduler = temp_scheduler
                 self.best_makespan = temp_makespan
                 self.scheduling_list = temp_scheduling_list
+            else:
+                break  # 終了
         
         return self.scheduling_list
-                
     
     
     # スケジューリング結果から,　クラスタ外の通信回数を取得
@@ -75,18 +73,6 @@ class Proposed():
                     num_diff+=1
         
         return num_diff
-    
-    
-    # dagのエッジの数を返す
-    def num_edge(self):
-        num_edge = 0  # DAGのエッジの総数
-        
-        for i in range(self.dag.num_of_node):
-            for j in range(self.dag.num_of_node):
-                if(self.dag.edge[i][j] != 0):  # エッジがあれば
-                    num_edge += 1
-        
-        return num_edge
     
     
     # 学習し, スケジューリングリストを得る
