@@ -145,3 +145,6 @@ python3 evaluation.py Proposed change_InoutRatio new_100_60_4 2 3 24 1 1 &
 python3 evaluation.py Proposed change_InoutRatio new_100_60_5 2 3 24 1 1 &
 python3 evaluation.py Proposed change_InoutRatio new_100_60_6 2 3 24 1 1 &
 python3 evaluation.py Proposed change_InoutRatio new_100_60_7 2 3 24 1 1
+
+wait
+python3 order_name.py change_InoutRatio

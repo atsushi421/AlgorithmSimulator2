@@ -126,3 +126,6 @@ python3 evaluation.py Proposed change_NumCore new_100_60_4 2 5 3 1 1 &
 python3 evaluation.py Proposed change_NumCore new_100_60_5 2 5 3 1 1 &
 python3 evaluation.py Proposed change_NumCore new_100_60_6 2 5 3 1 1 &
 python3 evaluation.py Proposed change_NumCore new_100_60_7 2 5 3 1 1
+
+wait
+python3 order_name.py change_NumCore
