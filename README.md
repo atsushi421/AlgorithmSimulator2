@@ -28,7 +28,7 @@ AlgorithmSimulator2 evaluates the performance of the algorithms on various param
 
 ## Other Files Description
 - **./DAG/~.tgff** - Information about the DAGs.
-- **class_class_ClusteredManyCore.py** - Processor to which the task is allocated.
+- **class_ClusteredManyCore.py** - Processor to which the task is allocated.
 - **class_DAG.py** - Input DAG.
 - **class_Scheduler.py** - Scheduler which allocates input DAGs to the processor.
 - **class_Q_learning.py** - Use Q-learning to obtain the optimal policy.
