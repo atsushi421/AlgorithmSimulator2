@@ -1,0 +1,4 @@
+seed 981
+series_local_xover 14
+task_cnt 100 1
+start_node 5 1

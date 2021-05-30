@@ -30,7 +30,7 @@ class DAG:
             if(self.entry[i] == 1):
                 self.ranku_calc(i)
         
-        self.CCR = self.ccr_calc()
+        self.ccr_calc()
         
 
 
@@ -169,6 +169,11 @@ class DAG:
         ave_exec = sum_exec / self.num_of_node
         
         self.CCR = ave_comm / ave_exec
+        
+    
+    # CP の長さを返す
+    def cp_len(self):
+        return max(self.ranku)  # rankuの最大値がCPの長さ
         
     
     # エッジの数を返す

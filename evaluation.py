@@ -26,12 +26,12 @@ class Evaluater:
         '''
         self.ALGORITHM_NAME = args[1]
         self.EVA_NAME = args[2]
-        self.TARGET = ClusteredManyCoreProcesser(int(args[4]), int(args[5]), int(args[6]))
+        self.TARGET = ClusteredManyCoreProcesser(int(args[4]), int(args[5]), float(args[6]))
         self.DAG = DAG(args[3])
         self.update_dag(float(args[7]), float(args[8]))
         self.LOG_PATH = "./result/" + self.EVA_NAME + "/" + self.ALGORITHM_NAME + "/log/" + self.DAG.file_name + "_" + str(self.TARGET.num_of_cluster) + "_" + str(self.TARGET.num_of_core) + "_" + ("{:.2f}".format(self.DAG.CCR)) + ".txt"
         self.write_param()
-        self.RESULT_PATH = self.set_result_path()
+        self.RESULT_PATH = self.set_result_path(float(args[7]), float(args[8]))
         self.evaluate()
     
     
@@ -87,25 +87,37 @@ class Evaluater:
     
     
     # 評価名に基づいて, result_path を決める
-    def set_result_path(self):
+    def set_result_path(self, factor_edge, factor_node):
         if(self.EVA_NAME == "change_CCR"):
-            print("未実装")
+            if(factor_edge == 0.8 and factor_node == 2):
+                return "./result/change_CCR/" + self.ALGORITHM_NAME + "/CCR_0.25.txt"
+            if(factor_edge == 1 and factor_node == 1.3):
+                return "./result/change_CCR/" + self.ALGORITHM_NAME + "/CCR_0.5.txt"
+            if(factor_edge == 1.5 and factor_node == 1):
+                return "./result/change_CCR/" + self.ALGORITHM_NAME + "/CCR_1.0.txt"
+            if(factor_edge == 2 and factor_node == 0.7):
+                return "./result/change_CCR/" + self.ALGORITHM_NAME + "/CCR_2.0.txt"
+            if(factor_edge == 3 and factor_node == 0.5):
+                return "./result/change_CCR/" + self.ALGORITHM_NAME + "/CCR_4.0.txt"
         
         if(self.EVA_NAME == "change_InoutRatio"):
             return "./result/change_InoutRatio/" + self.ALGORITHM_NAME + "/InoutRatio_" + str(self.TARGET.inout_ratio) + ".txt"
         
         if(self.EVA_NAME == "change_NumCore"):
-            return "./result/change_NumCore/" + self.ALGORITHM_NAME + "/NumCore_" + str(self.TARGET.num_of_core) + "txt"
+            return "./result/change_NumCore/" + self.ALGORITHM_NAME + "/NumCore_" + str(self.TARGET.num_of_core) + ".txt"
         
         if(self.EVA_NAME == "change_NumNode"):
-            if('20' in self.DAG.file_name):
+            if('20_' in self.DAG.file_name):
                 return "./result/change_NumNode/" + self.ALGORITHM_NAME + "/NumNode_20.txt"
-            if('50' in self.DAG.file_name):
+            if('50_' in self.DAG.file_name):
                 return "./result/change_NumNode/" + self.ALGORITHM_NAME + "/NumNode_50.txt"
-            if('100' in self.DAG.file_name):
+            if('100_' in self.DAG.file_name):
                 return "./result/change_NumNode/" + self.ALGORITHM_NAME + "/NumNode_100.txt"
-            if('200' in self.DAG.file_name):
+            if('200_' in self.DAG.file_name):
                 return "./result/change_NumNode/" + self.ALGORITHM_NAME + "/NumNode_200.txt"
+        
+        if(self.EVA_NAME == "random"):
+            return "./result/random/" + self.ALGORITHM_NAME + "/random.txt"
 
     
     # 評価パラメータをログに書き込む
