@@ -17,7 +17,7 @@ AlgorithmSimulator2 evaluates the performance of the algorithms on various param
      - Evaluation of varying the ratio of communication time outside the CC to communication time inside the CC for processors allocated tasks.
      - The ratio varies as [1.5, 3.0, 6.0, 12.0, 24.0]
    - `bash change_NumCore.sh`
-     - Evaluation of varying the number of cores in a single CC of processors for processors allocated tasks.
+     - Evaluation of varying the number of cores in a single CC for processors allocated tasks.
      - The number of cores varies as [2, 3, 4, 5]
    - `bash change_NumNode.sh`
      - Evaluation of varying the number of tasks in the input DAG.
