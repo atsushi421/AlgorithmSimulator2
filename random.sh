@@ -195,3 +195,6 @@ python3 evaluation.py Proposed random new_100_47 2 3 3 1 1
 wait
 python3 evaluation.py Proposed random new_100_48 2 3 3 1 1 &
 python3 evaluation.py Proposed random new_100_49 2 3 3 1 1
+
+wait
+python3 order_name.py random

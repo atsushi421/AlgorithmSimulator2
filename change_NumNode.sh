@@ -126,3 +126,6 @@ python3 evaluation.py Proposed change_NumNode new_200_4 2 3 3 1 1 &
 python3 evaluation.py Proposed change_NumNode new_200_5 2 3 3 1 1 &
 python3 evaluation.py Proposed change_NumNode new_200_6 2 3 3 1 1 &
 python3 evaluation.py Proposed change_NumNode new_200_7 2 3 3 1 1
+
+wait
+python3 order_name.py change_NumNode
