@@ -3,6 +3,12 @@
 ## Overview
 AlgorithmSimulator2 evaluates the performance of the algorithms on various parameters.
 
+The following algorithms are currently supported.
+- HEFT
+- QL-HEFT
+- Proposed algorithm
+  - [System Model](https://github.com/atsushi421/AlgorithmSimulator2/files/6567110/system_model_ver2.pdf)
+
 
 ## Usage
 1. Create a directory to store the results.
