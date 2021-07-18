@@ -369,3 +369,15 @@ class one_entry_DAG(DAG):
     # veの添え字を返す
     def virtual_entry_index(self):
         return self.num_of_node - 1
+    
+    
+    # エッジの数を返す
+    def num_edge(self):
+        num_edge = 0  # DAGのエッジの総数
+        
+        for i in range(self.num_of_node):
+            for j in range(self.num_of_node):
+                if(self.edge[i][j] != -1):  # エッジがあれば
+                    num_edge += 1
+        
+        return num_edge
