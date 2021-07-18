@@ -3,6 +3,12 @@
 ## Overview
 AlgorithmSimulator2 evaluates the performance of the algorithms on various parameters.
 
+The following algorithms are currently supported.
+- HEFT
+- QL-HEFT
+- Proposed algorithm
+  - [System Model](https://github.com/atsushi421/AlgorithmSimulator2/files/6567110/system_model_ver2.pdf)
+
 
 ## Usage
 1. Create a directory to store the results.
@@ -17,7 +23,7 @@ AlgorithmSimulator2 evaluates the performance of the algorithms on various param
      - Evaluation of varying the ratio of communication time outside the CC to communication time inside the CC for processors allocated tasks.
      - The ratio varies as [1.5, 3.0, 6.0, 12.0, 24.0]
    - `bash change_NumCore.sh`
-     - Evaluation of varying the number of cores in a single CC of processors for processors allocated tasks.
+     - Evaluation of varying the number of cores in a single CC for processors allocated tasks.
      - The number of cores varies as [2, 3, 4, 5]
    - `bash change_NumNode.sh`
      - Evaluation of varying the number of tasks in the input DAG.
@@ -28,7 +34,7 @@ AlgorithmSimulator2 evaluates the performance of the algorithms on various param
 
 ## Other Files Description
 - **./DAG/~.tgff** - Information about the DAGs.
-- **class_class_ClusteredManyCore.py** - Processor to which the task is allocated.
+- **class_ClusteredManyCore.py** - Processor to which the task is allocated.
 - **class_DAG.py** - Input DAG.
 - **class_Scheduler.py** - Scheduler which allocates input DAGs to the processor.
 - **class_Q_learning.py** - Use Q-learning to obtain the optimal policy.
